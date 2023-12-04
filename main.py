@@ -1,23 +1,17 @@
 import streamlit as st
 import pandas as pd
-from openpyxl import Workbook
 import os
 
 # Function to save data to Excel
 def save_to_excel(data, filename="rsvp_data.xlsx"):
     if not os.path.isfile(filename):
-        # Create a new workbook and add data
-        workbook = Workbook()
-        sheet = workbook.active
-        sheet.append(["Name", "Attending", "Number of Guests"])
-        for item in data:
-            sheet.append(item)
-        workbook.save(filename)
+        # Create a new Excel file and add data
+        df = pd.DataFrame(data, columns=["Name", "Attending", "Number of Guests"])
+        df.to_excel(filename, index=False)
     else:
-        # Append data to existing workbook
-        with pd.ExcelWriter(filename, mode='a', engine='openpyxl', if_sheet_exists='replace') as writer:
-            df = pd.DataFrame(data, columns=["Name", "Attending",
-            "Number of Guests"])
+        # Append data to existing Excel file
+        df = pd.DataFrame(data, columns=["Name", "Attending", "Number of Guests"])
+        with pd.ExcelWriter(filename, mode='a', engine='openpyxl') as writer:
             df.to_excel(writer, sheet_name="RSVP", index=False)
 
 # Streamlit UI
